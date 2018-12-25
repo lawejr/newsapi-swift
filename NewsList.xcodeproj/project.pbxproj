@@ -7,15 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		082E025B1C20AEE922ED2F91 /* libPods-NewsList.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BB1F6D8201006F61C465CD8 /* libPods-NewsList.a */; };
 		E32791F221D251DE00F67032 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E32791F121D251DE00F67032 /* AppDelegate.swift */; };
 		E32791F421D251DE00F67032 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E32791F321D251DE00F67032 /* ViewController.swift */; };
 		E32791F721D251DE00F67032 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E32791F521D251DE00F67032 /* Main.storyboard */; };
 		E32791FA21D251DE00F67032 /* NewsList.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E32791F821D251DE00F67032 /* NewsList.xcdatamodeld */; };
 		E32791FC21D251DF00F67032 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E32791FB21D251DF00F67032 /* Assets.xcassets */; };
 		E32791FF21D251DF00F67032 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E32791FD21D251DF00F67032 /* LaunchScreen.storyboard */; };
+		E327920821D2534300F67032 /* R.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = E327920721D2534300F67032 /* R.generated.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1BB1F6D8201006F61C465CD8 /* libPods-NewsList.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NewsList.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4EF28E1F85C51566E72DCA19 /* Pods-NewsList.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NewsList.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NewsList/Pods-NewsList.debug.xcconfig"; sourceTree = "<group>"; };
+		56D32383A0D0C40A1CFFE33B /* Pods-NewsList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NewsList.release.xcconfig"; path = "Pods/Target Support Files/Pods-NewsList/Pods-NewsList.release.xcconfig"; sourceTree = "<group>"; };
 		E32791EE21D251DE00F67032 /* NewsList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NewsList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E32791F121D251DE00F67032 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E32791F321D251DE00F67032 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -24,6 +29,7 @@
 		E32791FB21D251DF00F67032 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E32791FE21D251DF00F67032 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E327920021D251DF00F67032 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E327920721D2534300F67032 /* R.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = R.generated.swift; path = /Users/lawejr/Dev/ios/NewsList/NewsList/R.generated.swift; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,17 +37,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				082E025B1C20AEE922ED2F91 /* libPods-NewsList.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		282BC09326884438E79A10EF /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				4EF28E1F85C51566E72DCA19 /* Pods-NewsList.debug.xcconfig */,
+				56D32383A0D0C40A1CFFE33B /* Pods-NewsList.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		E32791E521D251DE00F67032 = {
 			isa = PBXGroup;
 			children = (
 				E32791F021D251DE00F67032 /* NewsList */,
 				E32791EF21D251DE00F67032 /* Products */,
+				282BC09326884438E79A10EF /* Pods */,
+				FBD54AB4FFD1A178DB5738C8 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -63,8 +81,17 @@
 				E32791FD21D251DF00F67032 /* LaunchScreen.storyboard */,
 				E327920021D251DF00F67032 /* Info.plist */,
 				E32791F821D251DE00F67032 /* NewsList.xcdatamodeld */,
+				E327920721D2534300F67032 /* R.generated.swift */,
 			);
 			path = NewsList;
+			sourceTree = "<group>";
+		};
+		FBD54AB4FFD1A178DB5738C8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1BB1F6D8201006F61C465CD8 /* libPods-NewsList.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,6 +101,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E327920321D251DF00F67032 /* Build configuration list for PBXNativeTarget "NewsList" */;
 			buildPhases = (
+				AFED2806768AC92634CA8D12 /* [CP] Check Pods Manifest.lock */,
+				E327920621D2529200F67032 /* R.swift */,
 				E32791EA21D251DE00F67032 /* Sources */,
 				E32791EB21D251DE00F67032 /* Frameworks */,
 				E32791EC21D251DE00F67032 /* Resources */,
@@ -133,6 +162,47 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		AFED2806768AC92634CA8D12 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NewsList-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E327920621D2529200F67032 /* R.swift */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$TEMP_DIR/rswift-lastrun",
+			);
+			name = R.swift;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				$SRCROOT/NewsList,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$PODS_ROOT/R.swift/rswift\" generate \"$SRCROOT/NewsList\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		E32791EA21D251DE00F67032 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -141,6 +211,7 @@
 				E32791F421D251DE00F67032 /* ViewController.swift in Sources */,
 				E32791FA21D251DE00F67032 /* NewsList.xcdatamodeld in Sources */,
 				E32791F221D251DE00F67032 /* AppDelegate.swift in Sources */,
+				E327920821D2534300F67032 /* R.generated.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,6 +355,7 @@
 		};
 		E327920421D251DF00F67032 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4EF28E1F85C51566E72DCA19 /* Pods-NewsList.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -296,12 +368,13 @@
 				PRODUCT_BUNDLE_IDENTIFIER = Lawet.NewsList;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
 		E327920521D251DF00F67032 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 56D32383A0D0C40A1CFFE33B /* Pods-NewsList.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -314,7 +387,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = Lawet.NewsList;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
