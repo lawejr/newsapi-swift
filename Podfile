@@ -1,8 +1,10 @@
 # Uncomment the next line to define a global platform for your project
-# platform :ios, '9.0'
+# platform :ios
 
 target 'NewsList' do
 
-	pod 'R.swift'
+    pod 'R.swift'
+    pod 'Moya'
+    pod 'Kingfisher'
 
 end
