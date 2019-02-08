@@ -25,6 +25,7 @@
 		E327921221D4AFAA00F67032 /* News.swift in Sources */ = {isa = PBXBuildFile; fileRef = E327921121D4AFAA00F67032 /* News.swift */; };
 		E327921521D4C18300F67032 /* NewsTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = E327921421D4C18300F67032 /* NewsTransport.swift */; };
 		E327921721D4C44600F67032 /* NewsApiServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E327921621D4C44600F67032 /* NewsApiServer.swift */; };
+		E3703774220E0FF800E333F0 /* NewsItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3703773220E0FF800E333F0 /* NewsItemViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		E327921121D4AFAA00F67032 /* News.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = News.swift; sourceTree = "<group>"; };
 		E327921421D4C18300F67032 /* NewsTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsTransport.swift; sourceTree = "<group>"; };
 		E327921621D4C44600F67032 /* NewsApiServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsApiServer.swift; sourceTree = "<group>"; };
+		E3703773220E0FF800E333F0 /* NewsItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsItemViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +118,7 @@
 				E304C3A421D4D5AE00ED8D0B /* R.generated.swift */,
 				E304C3A621D51CA900ED8D0B /* Constants.swift */,
 				E304C3A821D60A8900ED8D0B /* Instances.swift */,
+				E3703773220E0FF800E333F0 /* NewsItemViewController.swift */,
 			);
 			path = NewsList;
 			sourceTree = "<group>";
@@ -277,6 +280,7 @@
 				E32791FA21D251DE00F67032 /* NewsList.xcdatamodeld in Sources */,
 				E304C3A521D4D5AE00ED8D0B /* R.generated.swift in Sources */,
 				E32791F221D251DE00F67032 /* AppDelegate.swift in Sources */,
+				E3703774220E0FF800E333F0 /* NewsItemViewController.swift in Sources */,
 				E327921721D4C44600F67032 /* NewsApiServer.swift in Sources */,
 				E327921521D4C18300F67032 /* NewsTransport.swift in Sources */,
 				E304C3AC21D7659900ED8D0B /* Promise.swift in Sources */,

@@ -9,6 +9,7 @@
 import UIKit
 
 class NewsCell: UITableViewCell {
+    
     @IBOutlet var previewImage: UIImageView!
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var contentTextLabel: UILabel!
@@ -28,4 +29,5 @@ class NewsCell: UITableViewCell {
             }
         }
     }
+    
 }

@@ -48,6 +48,7 @@ protocol BaseTransport {
 
 
 extension BaseTransport {
+    
     static func request<T: Decodable>(_ method: Domain, with promise: Promise<T>) {
         provider.request(method) { response in
             switch response {
@@ -56,7 +57,7 @@ extension BaseTransport {
                     if let json = try? response.mapJSON() {
                         if let data = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
                             if let string = NSString(data: data, encoding: String.Encoding.utf8.rawValue) {
-//                                print(string)
+                                print(string)
                             }
                         }
                     } else {

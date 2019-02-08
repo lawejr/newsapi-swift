@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SafariServices
 import Kingfisher
 
 class NewsListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
@@ -31,6 +32,14 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         return cell ?? UITableViewCell()
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let urlString = news[indexPath.row].url, let url = URL(string: urlString) {
+            let svc = SFSafariViewController(url: url)
+        
+            present(svc, animated: true, completion: nil)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -41,6 +50,6 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         newsTableView.register(UINib(resource: R.nib.newsCell), forCellReuseIdentifier: R.reuseIdentifier.newsCell.identifier)
         newsTableView.rowHeight = 320
     }
-
+    
 }
 
