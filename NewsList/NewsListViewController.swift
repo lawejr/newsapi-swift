@@ -14,6 +14,8 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     
     @IBOutlet var newsTableView: UITableView!
     
+    var searchController: UISearchController!
+    
     private var news: [News] = []
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -43,12 +45,26 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let resultsController = SearchResultsController()
+        
         NewsTransport.getTop().then { result in
             self.news = result.articles
             self.newsTableView.reloadData()
+            resultsController.news = result.articles
         }
         newsTableView.register(UINib(resource: R.nib.newsCell), forCellReuseIdentifier: R.reuseIdentifier.newsCell.identifier)
         newsTableView.rowHeight = 320
+        
+        searchController = UISearchController(searchResultsController: resultsController)
+        
+        let searchBar = searchController.searchBar
+        
+        searchBar.placeholder = "Поиск"
+        searchBar.sizeToFit()
+        
+        newsTableView.tableHeaderView = searchBar
+        
+        searchController.searchResultsUpdater = resultsController
     }
     
 }
