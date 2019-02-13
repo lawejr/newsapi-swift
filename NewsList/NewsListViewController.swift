@@ -15,8 +15,21 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     @IBOutlet var newsTableView: UITableView!
     
     var searchController: UISearchController!
+    var resultsController: SearchResultsController!
+    weak var fetchTimer: Timer?
     
     private var news: [News] = []
+    
+    @objc
+    func requestNews() {
+        NewsTransport.getTop().then { result in
+            if self.news.first?.url != result.articles.first?.url {
+                self.news = result.articles
+                self.newsTableView.reloadData()
+                self.resultsController.news = result.articles
+            }
+        }
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return news.count
@@ -45,13 +58,13 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let resultsController = SearchResultsController()
+        resultsController = SearchResultsController()
         
-        NewsTransport.getTop().then { result in
-            self.news = result.articles
-            self.newsTableView.reloadData()
-            resultsController.news = result.articles
-        }
+        requestNews()
+        
+        fetchTimer?.invalidate()
+        fetchTimer = Timer.scheduledTimer(timeInterval: 60, target: self, selector: #selector(requestNews), userInfo: nil, repeats: true)
+        
         newsTableView.register(UINib(resource: R.nib.newsCell), forCellReuseIdentifier: R.reuseIdentifier.newsCell.identifier)
         newsTableView.rowHeight = 320
         
@@ -67,5 +80,10 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         searchController.searchResultsUpdater = resultsController
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        fetchTimer?.invalidate()
+    }
 }
 
