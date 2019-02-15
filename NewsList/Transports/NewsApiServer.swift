@@ -24,14 +24,6 @@ extension NewsApiServer {
         return Data()
     }
     
-    var task: Task {
-        var parameters: [String: Any] = [:]
-        
-        parameters["country"] = "ru"
-        
-        return Task.requestParameters(parameters: parameters, encoding: URLEncoding.default)
-    }
-    
     var headers: [String : String]? {
         return ["Authorization": Constants.newsApiKey]
     }

@@ -12,7 +12,7 @@ enum NewsDomain: NewsApiServer {
     
     case instance
     
-    case getTop
+    case getTop(page: Int)
     
     var path: String {
         switch self {
@@ -23,15 +23,30 @@ enum NewsDomain: NewsApiServer {
         }
     }
     
+    var task: Task {
+        var parameters: [String: Any] = [:]
+        
+        switch self {
+        case .getTop(let page):
+            parameters["country"] = "ru"
+            parameters["pageSize"] = 5
+            parameters["page"] = page
+        default:
+            break
+        }
+        
+        return Task.requestParameters(parameters: parameters, encoding: URLEncoding.default)
+    }
+    
 }
 
 final class NewsTransport: BaseTransport {
     
     static var provider = MoyaProvider<NewsDomain>()
     
-    static func getTop() -> Promise<NewsApiResponse<News>> {
+    static func getTop(page page: Int = 1) -> Promise<NewsApiResponse<News>> {
         return Promise { promise in
-            let method = NewsDomain.getTop
+            let method = NewsDomain.getTop(page: page)
             
             self.request(method, with: promise)
         }

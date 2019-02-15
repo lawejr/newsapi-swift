@@ -14,6 +14,7 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     
     @IBOutlet var newsTableView: UITableView!
     
+    var nextRequestPage: Int? = 1
     var searchController: UISearchController!
     var resultsController: SearchResultsController!
     weak var fetchTimer: Timer?
@@ -22,7 +23,7 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     
     @objc
     func requestNews() {
-        NewsTransport.getTop().then { result in
+        NewsTransport.getTop(page: self.nextRequestPage).then { result in
             if self.news.first?.url != result.articles.first?.url {
                 self.news = result.articles
                 self.newsTableView.reloadData()
@@ -52,6 +53,17 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
             let svc = SFSafariViewController(url: url)
         
             present(svc, animated: true, completion: nil)
+        }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        print("scroll")
+        let currentOffset = scrollView.contentOffset.y
+        let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
+        let deltaOffset = maximumOffset - currentOffset
+        
+        if deltaOffset <= 0 {
+            print("bottom edge")
         }
     }
     
