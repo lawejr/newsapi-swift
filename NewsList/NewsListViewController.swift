@@ -15,6 +15,7 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     @IBOutlet var newsTableView: UITableView!
     
     var nextRequestPage: Int? = 1
+    var hasActiveRequest: Bool = false
     var searchController: UISearchController!
     var resultsController: SearchResultsController!
     weak var fetchTimer: Timer?
@@ -22,12 +23,49 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     private var news: [News] = []
     
     @objc
-    func requestNews() {
-        NewsTransport.getTop(page: self.nextRequestPage).then { result in
-            if self.news.first?.url != result.articles.first?.url {
+    func handleScrollNews() {
+        guard let page = self.nextRequestPage else { return }
+        
+        self.hasActiveRequest = true
+        NewsTransport.getTop(page: page).then { result in
+            if self.news.count == 0 {
                 self.news = result.articles
-                self.newsTableView.reloadData()
-                self.resultsController.news = result.articles
+            } else {
+                self.news.append(contentsOf: result.articles)
+            }
+            
+            if self.news.count < result.totalResults && self.nextRequestPage != nil {
+                self.nextRequestPage = (self.nextRequestPage ?? 1) + 1
+            } else {
+                self.nextRequestPage = nil
+            }
+            
+            self.newsTableView.reloadData()
+            self.resultsController.news = self.news
+            self.hasActiveRequest = false
+        }
+    }
+    
+    @objc
+    func fetchNews() {
+        if (!hasActiveRequest) {
+            hasActiveRequest = true
+            
+            NewsTransport.getTop(page: 1).then { result in
+                if self.news.count == 0 {
+                    self.news.append(contentsOf: result.articles)
+                    self.newsTableView.reloadData()
+                } else {
+                    let newArticles = result.articles.filter() { article in
+                        return self.news.contains(where: { news in news.url == article.url })
+                    }
+                    
+                    if (newArticles.count != 0) {
+                        self.news.insert(contentsOf: newArticles, at: 0)
+                        self.newsTableView.reloadData()
+                    }
+                }
+                self.hasActiveRequest = false
             }
         }
     }
@@ -57,13 +95,14 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        print("scroll")
         let currentOffset = scrollView.contentOffset.y
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         let deltaOffset = maximumOffset - currentOffset
         
-        if deltaOffset <= 0 {
-            print("bottom edge")
+        if deltaOffset <= 0 && nextRequestPage != nil && !hasActiveRequest {
+            hasActiveRequest = true
+            
+            handleScrollNews()
         }
     }
     
@@ -72,10 +111,10 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         
         resultsController = SearchResultsController()
         
-        requestNews()
+        fetchNews()
         
         fetchTimer?.invalidate()
-        fetchTimer = Timer.scheduledTimer(timeInterval: 60, target: self, selector: #selector(requestNews), userInfo: nil, repeats: true)
+        fetchTimer = Timer.scheduledTimer(timeInterval: 60, target: self, selector: #selector(fetchNews), userInfo: nil, repeats: true)
         
         newsTableView.register(UINib(resource: R.nib.newsCell), forCellReuseIdentifier: R.reuseIdentifier.newsCell.identifier)
         newsTableView.rowHeight = 320

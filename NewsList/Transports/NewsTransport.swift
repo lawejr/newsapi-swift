@@ -44,9 +44,9 @@ final class NewsTransport: BaseTransport {
     
     static var provider = MoyaProvider<NewsDomain>()
     
-    static func getTop(page page: Int = 1) -> Promise<NewsApiResponse<News>> {
+    static func getTop(page: Int?) -> Promise<NewsApiResponse<News>> {
         return Promise { promise in
-            let method = NewsDomain.getTop(page: page)
+            let method = NewsDomain.getTop(page: page ?? 1)
             
             self.request(method, with: promise)
         }
