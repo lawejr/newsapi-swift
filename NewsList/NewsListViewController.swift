@@ -57,7 +57,7 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
                     self.newsTableView.reloadData()
                 } else {
                     let newArticles = result.articles.filter() { article in
-                        return self.news.contains(where: { news in news.url == article.url })
+                        return !self.news.contains(where: { news in news.url == article.url })
                     }
                     
                     if (newArticles.count != 0) {
