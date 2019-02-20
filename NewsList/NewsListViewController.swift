@@ -9,6 +9,7 @@
 import UIKit
 import SafariServices
 import Kingfisher
+import CoreData
 
 class NewsListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
@@ -22,6 +23,12 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private var news: [News] = []
     
+    private func filter(articles: [News]) -> [News] {
+        return articles.filter() { article in
+            return !news.contains(where: { item in item.url == article.url })
+        }
+    }
+    
     @objc
     func handleScrollNews() {
         guard let page = self.nextRequestPage else { return }
@@ -31,7 +38,11 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
             if self.news.count == 0 {
                 self.news = result.articles
             } else {
-                self.news.append(contentsOf: result.articles)
+                let newArticles = self.filter(articles: result.articles)
+                
+                if newArticles.count > 0 {
+                    self.news.append(contentsOf: newArticles)
+                }
             }
             
             if self.news.count < result.totalResults && self.nextRequestPage != nil {
@@ -56,17 +67,26 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
                     self.news.append(contentsOf: result.articles)
                     self.newsTableView.reloadData()
                 } else {
-                    let newArticles = result.articles.filter() { article in
-                        return !self.news.contains(where: { news in news.url == article.url })
-                    }
+                    let newArticles = self.filter(articles: result.articles)
                     
-                    if (newArticles.count != 0) {
-                        self.news.insert(contentsOf: newArticles, at: 0)
+                    if newArticles.count > 0 {
+                        self.news.insert(contentsOf: self.filter(articles: result.articles), at: 0)
                         self.newsTableView.reloadData()
                     }
                 }
                 self.hasActiveRequest = false
             }
+        }
+    }
+    
+    @objc
+    func applicationWillResignActive(notification: Notification) {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context = appDelegate.managedObjectContext
+        let savedNewsCount = self.news.count <= NewsTransport.pageSize ? self.news.count : NewsTransport.pageSize
+        
+        for i in 0 ..< savedNewsCount {
+            print(i)
         }
     }
     
@@ -80,7 +100,7 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         let url = URL(string: newsItem.imageUrl ?? "")
         
         cell?.title = newsItem.title ?? ""
-        cell?.contentText = newsItem.description ?? ""
+        cell?.contentText = newsItem.text ?? ""
         cell?.previewImage.kf.setImage(with: url, placeholder: R.image.placeholder())
         
         return cell ?? UITableViewCell()
@@ -111,6 +131,27 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         
         resultsController = SearchResultsController()
         
+        let арр = UIApplication.shared
+        let appDelegate = арр.delegate as! AppDelegate
+        let context = appDelegate.managedObjectContext
+        let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: News.entityName)
+        
+        do {
+            let objects = try context.fetch(request)
+            print(objects)
+            
+            for object in objects {
+                print(object)
+            }
+            
+            let арр = UIApplication.shared
+            
+            NotificationCenter.default.addObserver(self, selector: #selector(applicationWillResignActive), name: UIApplication.willResignActiveNotification, object: арр)
+        } catch {
+            // Перехват ошибки, сгенерированной методом executeFetchRequest()
+            print("There was an error in executeFetchRequest(): \(error)")
+        }
+        
         fetchNews()
         
         fetchTimer?.invalidate()
@@ -136,5 +177,6 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         
         fetchTimer?.invalidate()
     }
+    
 }
 

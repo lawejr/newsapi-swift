@@ -7,14 +7,16 @@
 //
 
 struct News: Decodable {
+    static let entityName = "NewsEntity"
+    
     let title: String?
-    let description: String?
+    let text: String?
     let url: String?
     let imageUrl: String?
 
     private enum CodingKeys: String, CodingKey {
         case title
-        case description
+        case text = "description"
         case url
         case imageUrl = "urlToImage"
     }

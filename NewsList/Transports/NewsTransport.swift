@@ -29,7 +29,7 @@ enum NewsDomain: NewsApiServer {
         switch self {
         case .getTop(let page):
             parameters["country"] = "ru"
-            parameters["pageSize"] = 5
+            parameters["pageSize"] = NewsTransport.pageSize
             parameters["page"] = page
         default:
             break
@@ -41,7 +41,7 @@ enum NewsDomain: NewsApiServer {
 }
 
 final class NewsTransport: BaseTransport {
-    
+    static let pageSize = 5
     static var provider = MoyaProvider<NewsDomain>()
     
     static func getTop(page: Int?) -> Promise<NewsApiResponse<News>> {

@@ -49,7 +49,7 @@ extension BaseTransport {
                     if let json = try? response.mapJSON() {
                         if let data = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
                             if let string = NSString(data: data, encoding: String.Encoding.utf8.rawValue) {
-                                print(string)
+//                                print(string)
                             }
                         }
                     } else {

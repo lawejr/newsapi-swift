@@ -49,7 +49,7 @@ class SearchResultsController: UITableViewController, UISearchResultsUpdating {
         let url = URL(string: newsItem.imageUrl ?? "")
         
         cell?.title = newsItem.title ?? ""
-        cell?.contentText = newsItem.description ?? ""
+        cell?.contentText = newsItem.text ?? ""
         cell?.previewImage.kf.setImage(with: url, placeholder: R.image.placeholder())
         
         return cell ?? UITableViewCell()
