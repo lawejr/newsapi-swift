@@ -7,12 +7,6 @@
 //
 
 struct News: Decodable {
-    static let entityName = "NewsEntity"
-    static let titleKey = "title"
-    static let textKey = "text"
-    static let urlKey = "url"
-    static let imageUrlKey = "imageUrl"
-    
     static func fromCoreData(data: NewsEntity) -> News {
         return News(title: data.title, text: data.text, url: data.url, imageUrl: data.imageUrl)
     }

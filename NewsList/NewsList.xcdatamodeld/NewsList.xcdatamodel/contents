@@ -6,6 +6,7 @@
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
+    <fetchRequest name="FetchAllNewsEntity" entity="NewsEntity"/>
     <elements>
         <element name="NewsEntity" positionX="-45" positionY="0" width="128" height="105"/>
     </elements>

@@ -88,7 +88,8 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
         let savedNewsCount = self.news.count <= NewsTransport.pageSize ? self.news.count : NewsTransport.pageSize
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: News.entityName)
+        // Пример использования запроса созданного из кода
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: NewsEntity.entityName)
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         
         do {
@@ -99,9 +100,10 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         
         for i in 0 ..< savedNewsCount {
             let article = self.news[i]
-            let objectForSave = NSEntityDescription.insertNewObject(forEntityName: News.entityName, into: context)
             
-            objectForSave.setValue(article.title, forKey: News.titleKey)
+            if let objectForSave = NSEntityDescription.insertNewObject(forEntityName: NewsEntity.entityName, into: context) as? NewsEntity {
+                objectForSave.configureFrom(news: article)
+            }
         }
         
         appDelegate.saveContext()
@@ -149,10 +151,11 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         let арр = UIApplication.shared
         let appDelegate = арр.delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
-        let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: News.entityName)
+        // Пример использования запроса созданного через интерфейс
+        let request = appDelegate.managedObjectModel.fetchRequestTemplate(forName: "FetchAllNewsEntity")
         
         do {
-            if let objects = try context.fetch(request) as? [NewsEntity], self.news.count == 0 {
+            if let request = request, let objects = try context.fetch(request) as? [NewsEntity], self.news.count == 0 {
                 for object in objects {
                     self.news.append(News.fromCoreData(data: object))
                 }
