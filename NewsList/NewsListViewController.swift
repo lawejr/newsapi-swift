@@ -58,11 +58,15 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     @objc
-    func fetchNews() {
+    func fetchNews(isFirst: Bool = false) {
         if (!hasActiveRequest) {
             hasActiveRequest = true
             
             NewsTransport.getTop(page: 1).then { result in
+                if isFirst {
+                    self.news = []
+                }
+                
                 if self.news.count == 0 {
                     self.news.append(contentsOf: result.articles)
                     self.newsTableView.reloadData()
@@ -84,10 +88,23 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
         let savedNewsCount = self.news.count <= NewsTransport.pageSize ? self.news.count : NewsTransport.pageSize
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: News.entityName)
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        
+        do {
+            try context.execute(deleteRequest)
+        } catch {
+            print(error)
+        }
         
         for i in 0 ..< savedNewsCount {
-            print(i)
+            let article = self.news[i]
+            let objectForSave = NSEntityDescription.insertNewObject(forEntityName: News.entityName, into: context)
+            
+            objectForSave.setValue(article.title, forKey: News.titleKey)
         }
+        
+        appDelegate.saveContext()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -129,30 +146,28 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        resultsController = SearchResultsController()
-        
         let арр = UIApplication.shared
         let appDelegate = арр.delegate as! AppDelegate
         let context = appDelegate.managedObjectContext
         let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: News.entityName)
         
         do {
-            let objects = try context.fetch(request)
-            print(objects)
-            
-            for object in objects {
-                print(object)
+            if let objects = try context.fetch(request) as? [NewsEntity], self.news.count == 0 {
+                for object in objects {
+                    self.news.append(News.fromCoreData(data: object))
+                }
+                self.newsTableView.reloadData()
             }
-            
-            let арр = UIApplication.shared
-            
-            NotificationCenter.default.addObserver(self, selector: #selector(applicationWillResignActive), name: UIApplication.willResignActiveNotification, object: арр)
         } catch {
             // Перехват ошибки, сгенерированной методом executeFetchRequest()
             print("There was an error in executeFetchRequest(): \(error)")
         }
         
-        fetchNews()
+        resultsController = SearchResultsController()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationWillResignActive), name: UIApplication.willResignActiveNotification, object: арр)
+        
+        fetchNews(isFirst: true)
         
         fetchTimer?.invalidate()
         fetchTimer = Timer.scheduledTimer(timeInterval: 60, target: self, selector: #selector(fetchNews), userInfo: nil, repeats: true)
