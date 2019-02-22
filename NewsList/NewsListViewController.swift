@@ -39,8 +39,6 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         
         resultsController = SearchResultsController()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(applicationWillResignActive), name: UIApplication.willResignActiveNotification, object: арр)
-        
         fetchNews(isFirst: true)
         
         fetchTimer?.invalidate()
@@ -109,6 +107,21 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         }
     }
     
+    func save(news: [News]) {
+        let savedNewsCount = news.count <= NewsTransport.pageSize ? news.count : NewsTransport.pageSize
+        
+        CoreDataHelper.shared.removeRecordsFor(entity: NewsEntity.entityName)
+        
+        for i in 0 ..< savedNewsCount {
+            let article = news[i]
+            
+            if let record = CoreDataHelper.shared.createRecordFor(entity: NewsEntity.entityName) as? NewsEntity {
+                record.configureFrom(news: article)
+                CoreDataHelper.shared.saveChanges()
+            }
+        }
+    }
+    
     @objc
     func handleScrollNews() {
         guard let page = self.nextRequestPage else { return }
@@ -159,22 +172,8 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
                     }
                 }
                 self.hasActiveRequest = false
-            }
-        }
-    }
-    
-    @objc
-    func applicationWillResignActive(notification: Notification) {
-        let savedNewsCount = self.news.count <= NewsTransport.pageSize ? self.news.count : NewsTransport.pageSize
-        
-        CoreDataHelper.shared.removeRecordsFor(entity: NewsEntity.entityName)
-        
-        for i in 0 ..< savedNewsCount {
-            let article = self.news[i]
-            
-            if let record = CoreDataHelper.shared.createRecordFor(entity: NewsEntity.entityName) as? NewsEntity {
-                record.configureFrom(news: article)
-                CoreDataHelper.shared.saveChanges()
+                
+                self.save(news: self.news)
             }
         }
     }
