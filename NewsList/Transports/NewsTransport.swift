@@ -10,16 +10,12 @@ import Moya
 
 enum NewsDomain: NewsApiServer {
     
-    case instance
-    
     case getTop(page: Int)
     
     var path: String {
         switch self {
         case .getTop:
             return "/top-headlines"
-        default:
-            return ""
         }
     }
     
@@ -31,8 +27,6 @@ enum NewsDomain: NewsApiServer {
             parameters["country"] = "ru"
             parameters["pageSize"] = NewsTransport.pageSize
             parameters["page"] = page
-        default:
-            break
         }
         
         return Task.requestParameters(parameters: parameters, encoding: URLEncoding.default)

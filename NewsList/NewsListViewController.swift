@@ -19,14 +19,12 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     var hasActiveRequest: Bool = false
     var searchController: UISearchController!
     var resultsController: SearchResultsController!
-    weak var fetchTimer: Timer?
+    var fetchTimer: Timer?
     
     private var news: [News] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let арр = UIApplication.shared
         
         let objects = CoreDataHelper.shared.fetchRecordsFor(entity: NewsEntity.entityName)
         
@@ -117,7 +115,7 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
             
             if let record = CoreDataHelper.shared.createRecordFor(entity: NewsEntity.entityName) as? NewsEntity {
                 record.configureFrom(news: article)
-                CoreDataHelper.shared.saveChanges()
+                CoreDataHelper.shared.saveContext()
             }
         }
     }
@@ -147,6 +145,8 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
             self.newsTableView.reloadData()
             self.resultsController.news = self.news
             self.hasActiveRequest = false
+        }.catch { error in
+            print(error)
         }
     }
     
@@ -174,6 +174,8 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
                 self.hasActiveRequest = false
                 
                 self.save(news: self.news)
+            }.catch { error in
+                print(error)
             }
         }
     }
