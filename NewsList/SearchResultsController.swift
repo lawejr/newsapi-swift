@@ -46,7 +46,7 @@ class SearchResultsController: UITableViewController, UISearchResultsUpdating {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: R.reuseIdentifier.newsCell.identifier) as? NewsCell
         let newsItem = filteredNews[indexPath.row]
-        let url = URL(string: newsItem.imageUrl ?? "")
+        let url = URL(string: newsItem.imageURL ?? "")
         
         cell?.title = newsItem.title ?? ""
         cell?.contentText = newsItem.text ?? ""

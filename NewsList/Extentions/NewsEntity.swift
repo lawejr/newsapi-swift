@@ -12,13 +12,13 @@ extension NewsEntity {
     static let titleKey = "title"
     static let textKey = "text"
     static let urlKey = "url"
-    static let imageUrlKey = "imageUrl"
+    static let imageURLKey = "imageURL"
     
-    func configureFrom(news: News) {
-        self.setValue(news.title, forKey: NewsEntity.titleKey)
-        self.setValue(news.text, forKey: NewsEntity.textKey)
-        self.setValue(news.url, forKey: NewsEntity.urlKey)
-        self.setValue(news.imageUrl, forKey: NewsEntity.imageUrlKey)
+    func configureFrom(newsItem: News) {
+        self.setValue(newsItem.title, forKey: NewsEntity.titleKey)
+        self.setValue(newsItem.text, forKey: NewsEntity.textKey)
+        self.setValue(newsItem.url, forKey: NewsEntity.urlKey)
+        self.setValue(newsItem.imageURL, forKey: NewsEntity.imageURLKey)
     }
     
 }

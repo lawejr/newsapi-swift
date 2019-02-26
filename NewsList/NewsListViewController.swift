@@ -16,9 +16,9 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     @IBOutlet var newsTableView: UITableView!
     
     var nextRequestPage: Int? = 1
-    var hasActiveRequest: Bool = false
-    var searchController: UISearchController!
-    var resultsController: SearchResultsController!
+    var hasActiveRequest = false
+    var resultsController = SearchResultsController()
+    var searchController: UISearchController?
     var fetchTimer: Timer?
     
     private var news: [News] = []
@@ -35,8 +35,6 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
             self.newsTableView.reloadData()
         }
         
-        resultsController = SearchResultsController()
-        
         fetchNews(isFirst: true)
         
         fetchTimer?.invalidate()
@@ -47,14 +45,14 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         
         searchController = UISearchController(searchResultsController: resultsController)
         
-        let searchBar = searchController.searchBar
+        if let searchBar = searchController?.searchBar {
+            searchBar.placeholder = "Поиск"
+            searchBar.sizeToFit()
+            
+            newsTableView.tableHeaderView = searchBar
+        }
         
-        searchBar.placeholder = "Поиск"
-        searchBar.sizeToFit()
-        
-        newsTableView.tableHeaderView = searchBar
-        
-        searchController.searchResultsUpdater = resultsController
+        searchController?.searchResultsUpdater = resultsController
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -76,7 +74,7 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = newsTableView.dequeueReusableCell(withIdentifier: R.reuseIdentifier.newsCell.identifier) as? NewsCell
         let newsItem = news[indexPath.row]
-        let url = URL(string: newsItem.imageUrl ?? "")
+        let url = URL(string: newsItem.imageURL ?? "")
         
         cell?.title = newsItem.title ?? ""
         cell?.contentText = newsItem.text ?? ""
@@ -114,7 +112,7 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
             let article = news[i]
             
             if let record = CoreDataHelper.shared.createRecordFor(entity: NewsEntity.entityName) as? NewsEntity {
-                record.configureFrom(news: article)
+                record.configureFrom(newsItem: article)
                 CoreDataHelper.shared.saveContext()
             }
         }

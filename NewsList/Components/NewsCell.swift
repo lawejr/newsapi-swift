@@ -16,17 +16,13 @@ class NewsCell: UITableViewCell {
     
     var title = "" {
         didSet {
-            if (title != oldValue) {
-                titleLabel.text = title
-            }
+            titleLabel.text = title
         }
     }
     
     var contentText = "" {
         didSet {
-            if (contentText != oldValue) {
-                contentTextLabel.text = contentText
-            }
+            contentTextLabel.text = contentText
         }
     }
     

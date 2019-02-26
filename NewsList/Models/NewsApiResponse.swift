@@ -10,8 +10,4 @@ struct NewsApiResponse<T: Decodable>: Decodable {
     let status: String
     let articles: [T]
     let totalResults: Int
-    
-    private enum CodingKeys: String, CodingKey {
-        case status, articles, totalResults
-    }
 }

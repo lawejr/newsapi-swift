@@ -19,14 +19,7 @@ final class CoreDataHelper {
         let context = managedObjectContext
         
         if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-            }
+            let _ = try? context.save()
         }
     }
     
@@ -36,14 +29,8 @@ final class CoreDataHelper {
         
         var result: [NSManagedObject] = []
         
-        do {
-            let records = try managedObjectContext.fetch(fetchRequest)
-            
-            if let records = records as? [NSManagedObject] {
-                result = records
-            }
-        } catch {
-            print(error)
+        if let _records = try? managedObjectContext.fetch(fetchRequest), let records = _records as? [NSManagedObject] {
+            result = records
         }
         
         return result
@@ -52,12 +39,7 @@ final class CoreDataHelper {
     func removeRecordsFor(entity: String) {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity)
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        
-        do {
-            try managedObjectContext.execute(deleteRequest)
-        } catch {
-            print(error)
-        }
+        let _ = try? managedObjectContext.execute(deleteRequest)
         
         saveContext()
     }
@@ -76,13 +58,13 @@ final class CoreDataHelper {
         return result
     }
     
-    lazy var applicationDocumentsDirectory: URL = {
+    lazy var applicationDocumentsDirectory: URL? = {
         // Каталог, который приложение использует для хранения файла Core Data.
         // Этот код использует каталог Documents в каталоге Application Support.
         
         let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         
-        return urls[urls.count - 1]
+        return urls.last
     }()
     
     lazy var managedObjectModel: NSManagedObjectModel = {
@@ -103,7 +85,7 @@ final class CoreDataHelper {
         // хранилища невозможно.
         // Создаем инспектор и хранилище
         let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
-        let url = self.applicationDocumentsDirectory.appendingPathComponent("SingleViewCoreData.sqlite")
+        let url = self.applicationDocumentsDirectory?.appendingPathComponent("SingleViewCoreData.sqlite")
         
         var failureReason = "There was an error creating or loading the application's saved data."
         
