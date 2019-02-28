@@ -15,10 +15,10 @@ extension NewsEntity {
     static let imageURLKey = "imageURL"
     
     func configureFrom(newsItem: News) {
-        self.setValue(newsItem.title, forKey: NewsEntity.titleKey)
-        self.setValue(newsItem.text, forKey: NewsEntity.textKey)
-        self.setValue(newsItem.url, forKey: NewsEntity.urlKey)
-        self.setValue(newsItem.imageURL, forKey: NewsEntity.imageURLKey)
+        setValue(newsItem.title, forKey: NewsEntity.titleKey)
+        setValue(newsItem.text, forKey: NewsEntity.textKey)
+        setValue(newsItem.url, forKey: NewsEntity.urlKey)
+        setValue(newsItem.imageURL, forKey: NewsEntity.imageURLKey)
     }
     
 }

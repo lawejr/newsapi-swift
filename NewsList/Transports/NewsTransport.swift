@@ -42,7 +42,7 @@ final class NewsTransport: BaseTransport {
         return Promise { promise in
             let method = NewsDomain.getTop(page: page ?? 1)
             
-            self.request(method, with: promise)
+            request(method, with: promise)
         }
     }
     

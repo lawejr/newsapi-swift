@@ -28,11 +28,10 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         
         let objects = CoreDataHelper.shared.fetchRecordsFor(entity: NewsEntity.entityName)
         
-        if let objects = objects as? [NewsEntity], self.news.count == 0 {
-            for object in objects {
-                self.news.append(News.fromCoreData(data: object))
-            }
-            self.newsTableView.reloadData()
+        if let objects = objects as? [NewsEntity], news.count == 0 {
+            news = objects.map { News.fromCoreData(data: $0)}
+            
+            updateUI()
         }
         
         fetchNews(isFirst: true)
@@ -63,8 +62,13 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private func filter(articles: [News]) -> [News] {
         return articles.filter() { article in
-            return !news.contains(where: { item in item.url == article.url })
+            return !news.contains(where: { $0.url == article.url })
         }
+    }
+    
+    private func updateUI() {
+        resultsController.news = news
+        newsTableView.reloadData()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -72,22 +76,22 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = newsTableView.dequeueReusableCell(withIdentifier: R.reuseIdentifier.newsCell.identifier) as? NewsCell
-        let newsItem = news[indexPath.row]
-        let url = URL(string: newsItem.imageURL ?? "")
+        if let cell = newsTableView.dequeueReusableCell(withIdentifier: R.reuseIdentifier.newsCell.identifier) as? NewsCell {
+            let newsItem = news[indexPath.row]
+            
+            cell.configure(from: newsItem)
+            
+            return cell
+        }
         
-        cell?.title = newsItem.title ?? ""
-        cell?.contentText = newsItem.text ?? ""
-        cell?.previewImage.kf.setImage(with: url, placeholder: R.image.placeholder())
-        
-        return cell ?? UITableViewCell()
+        return UITableViewCell()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let urlString = news[indexPath.row].url, let url = URL(string: urlString) {
-            let svc = SFSafariViewController(url: url)
+            let safariViewController = SFSafariViewController(url: url)
         
-            present(svc, animated: true, completion: nil)
+            present(safariViewController, animated: true, completion: nil)
         }
     }
     
@@ -118,11 +122,10 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         }
     }
     
-    @objc
     func handleScrollNews() {
-        guard let page = self.nextRequestPage else { return }
+        guard let page = nextRequestPage else { return }
         
-        self.hasActiveRequest = true
+        hasActiveRequest = true
         NewsTransport.getTop(page: page).then { result in
             if self.news.count == 0 {
                 self.news = result.articles
@@ -140,8 +143,7 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
                 self.nextRequestPage = nil
             }
             
-            self.newsTableView.reloadData()
-            self.resultsController.news = self.news
+            self.updateUI()
             self.hasActiveRequest = false
         }.catch { error in
             print(error)
@@ -150,31 +152,31 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     
     @objc
     func fetchNews(isFirst: Bool = false) {
-        if (!hasActiveRequest) {
-            hasActiveRequest = true
-            
-            NewsTransport.getTop(page: 1).then { result in
-                if isFirst {
-                    self.news = []
-                }
-                
-                if self.news.count == 0 {
-                    self.news.append(contentsOf: result.articles)
-                    self.newsTableView.reloadData()
-                } else {
-                    let newArticles = self.filter(articles: result.articles)
-                    
-                    if newArticles.count > 0 {
-                        self.news.insert(contentsOf: self.filter(articles: result.articles), at: 0)
-                        self.newsTableView.reloadData()
-                    }
-                }
-                self.hasActiveRequest = false
-                
-                self.save(news: self.news)
-            }.catch { error in
-                print(error)
+        guard !hasActiveRequest else { return }
+        
+        hasActiveRequest = true
+        
+        NewsTransport.getTop(page: 1).then { result in
+            if isFirst {
+                self.news = []
             }
+            
+            if self.news.count == 0 {
+                self.news.append(contentsOf: result.articles)
+                self.updateUI()
+            } else {
+                let newArticles = self.filter(articles: result.articles)
+                
+                if newArticles.count > 0 {
+                    self.news.insert(contentsOf: self.filter(articles: result.articles), at: 0)
+                    self.updateUI()
+                }
+            }
+            self.hasActiveRequest = false
+            
+            self.save(news: self.news)
+        }.catch { error in
+            print(error)
         }
     }
     

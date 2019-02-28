@@ -14,16 +14,10 @@ class SearchResultsController: UITableViewController, UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {
         if let searchString = searchController.searchBar.text {
-            filteredNews.removeAll(keepingCapacity: true)
+            filteredNews.removeAll()
             
             if !searchString.isEmpty {
-                let filter: (News) -> Bool = { newsItem in
-                    let range = newsItem.title?.range(of: searchString, options: NSString.CompareOptions.caseInsensitive, range: nil, locale: nil)
-                    
-                    return range != nil
-                }
-                
-                filteredNews = news.filter(filter)
+                filteredNews = news.filter({ $0.title?.lowercased().contains(searchString.lowercased()) ?? false })
             }
         }
         
@@ -44,15 +38,15 @@ class SearchResultsController: UITableViewController, UISearchResultsUpdating {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: R.reuseIdentifier.newsCell.identifier) as? NewsCell
-        let newsItem = filteredNews[indexPath.row]
-        let url = URL(string: newsItem.imageURL ?? "")
+        if let cell = tableView.dequeueReusableCell(withIdentifier: R.reuseIdentifier.newsCell.identifier) as? NewsCell {
+            let newsItem = filteredNews[indexPath.row]
+            
+            cell.configure(from: newsItem)
+            
+            return cell
+        }
         
-        cell?.title = newsItem.title ?? ""
-        cell?.contentText = newsItem.text ?? ""
-        cell?.previewImage.kf.setImage(with: url, placeholder: R.image.placeholder())
-        
-        return cell ?? UITableViewCell()
+        return UITableViewCell()
     }
 
 }

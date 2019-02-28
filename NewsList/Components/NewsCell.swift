@@ -26,4 +26,12 @@ class NewsCell: UITableViewCell {
         }
     }
     
+    func configure(from model: News) {
+        let url = URL(string: model.imageURL ?? "")
+        
+        title = model.title ?? ""
+        contentText = model.text ?? ""
+        previewImage.kf.setImage(with: url, placeholder: R.image.placeholder())
+    }
+    
 }

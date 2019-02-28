@@ -84,8 +84,8 @@ final class CoreDataHelper {
         // с приложением. Это свойство является необязательным, поскольку существуют формальные условия , при которых создание
         // хранилища невозможно.
         // Создаем инспектор и хранилище
-        let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
-        let url = self.applicationDocumentsDirectory?.appendingPathComponent("SingleViewCoreData.sqlite")
+        let coordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
+        let url = applicationDocumentsDirectory?.appendingPathComponent("SingleViewCoreData.sqlite")
         
         var failureReason = "There was an error creating or loading the application's saved data."
         
@@ -118,7 +118,7 @@ final class CoreDataHelper {
         // Это свойство является необязательным, поскольку
         // существуют формальные условия, при которых создание
         // контекста невозможно.
-        let coordinator = self.persistentStoreCoordinator
+        let coordinator = persistentStoreCoordinator
         var managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         
         managedObjectContext.persistentStoreCoordinator = coordinator
