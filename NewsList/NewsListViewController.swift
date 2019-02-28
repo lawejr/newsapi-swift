@@ -40,8 +40,6 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         fetchTimer = Timer.scheduledTimer(timeInterval: 60, target: self, selector: #selector(fetchNews), userInfo: nil, repeats: true)
         
         newsTableView.register(UINib(resource: R.nib.newsCell), forCellReuseIdentifier: R.reuseIdentifier.newsCell.identifier)
-        newsTableView.rowHeight = 320
-        
         searchController = UISearchController(searchResultsController: resultsController)
         
         if let searchBar = searchController?.searchBar {
@@ -95,12 +93,20 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         }
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let rowHeight = self.view.frame.size.height / 3
+        let minRowHeight: CGFloat = 320
+        
+        return rowHeight < minRowHeight ? minRowHeight : rowHeight
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let currentOffset = scrollView.contentOffset.y
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         let deltaOffset = maximumOffset - currentOffset
+        let cellHeight = newsTableView.visibleCells.first?.frame.height ?? 0
         
-        if deltaOffset <= 0 && nextRequestPage != nil && !hasActiveRequest {
+        if deltaOffset <= cellHeight * 2 && nextRequestPage != nil && !hasActiveRequest {
             hasActiveRequest = true
             
             handleScrollNews()
