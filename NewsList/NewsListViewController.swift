@@ -40,7 +40,9 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         fetchTimer = Timer.scheduledTimer(timeInterval: 60, target: self, selector: #selector(fetchNews), userInfo: nil, repeats: true)
         
         newsTableView.register(UINib(resource: R.nib.newsCell), forCellReuseIdentifier: R.reuseIdentifier.newsCell.identifier)
+        
         searchController = UISearchController(searchResultsController: resultsController)
+        searchController?.searchResultsUpdater = resultsController
         
         if let searchBar = searchController?.searchBar {
             searchBar.placeholder = "Поиск"
@@ -48,8 +50,6 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
             
             newsTableView.tableHeaderView = searchBar
         }
-        
-        searchController?.searchResultsUpdater = resultsController
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -93,22 +93,10 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         }
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let rowHeight = self.view.frame.size.height / 3
-        let minRowHeight: CGFloat = 320
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let lastRow = indexPath.row
         
-        return rowHeight < minRowHeight ? minRowHeight : rowHeight
-    }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let currentOffset = scrollView.contentOffset.y
-        let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
-        let deltaOffset = maximumOffset - currentOffset
-        let cellHeight = newsTableView.visibleCells.first?.frame.height ?? 0
-        
-        if deltaOffset <= cellHeight * 2 && nextRequestPage != nil && !hasActiveRequest {
-            hasActiveRequest = true
-            
+        if lastRow == news.count - 1 {
             handleScrollNews()
         }
     }
@@ -129,6 +117,7 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     func handleScrollNews() {
+        guard !hasActiveRequest else { return }
         guard let page = nextRequestPage else { return }
         
         hasActiveRequest = true

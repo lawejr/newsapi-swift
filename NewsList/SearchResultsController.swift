@@ -28,7 +28,6 @@ class SearchResultsController: UITableViewController, UISearchResultsUpdating {
         super.viewDidLoad()
 
         tableView.register(UINib(resource: R.nib.newsCell), forCellReuseIdentifier: R.reuseIdentifier.newsCell.identifier)
-        tableView.rowHeight = 320
     }
 
     // MARK: - Table view data source
