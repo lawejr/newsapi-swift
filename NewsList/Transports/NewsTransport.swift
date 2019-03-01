@@ -10,7 +10,7 @@ import Moya
 
 enum NewsDomain: NewsApiServer {
     
-    case getTop(page: Int)
+    case getTop(page: Int, pageSize: Int)
     
     var path: String {
         switch self {
@@ -23,9 +23,9 @@ enum NewsDomain: NewsApiServer {
         var parameters: [String: Any] = [:]
         
         switch self {
-        case .getTop(let page):
+        case .getTop(let page, let pageSize):
             parameters["country"] = "ru"
-            parameters["pageSize"] = NewsTransport.pageSize
+            parameters["pageSize"] = pageSize
             parameters["page"] = page
         }
         
@@ -35,12 +35,12 @@ enum NewsDomain: NewsApiServer {
 }
 
 final class NewsTransport: BaseTransport {
-    static let pageSize = 5
+    static let defaultPageSize = 5
     static var provider = MoyaProvider<NewsDomain>()
     
-    static func getTop(page: Int?) -> Promise<NewsApiResponse<News>> {
+    static func getTop(page: Int?, pageSize: Int = NewsTransport.defaultPageSize) -> Promise<NewsApiResponse<News>> {
         return Promise { promise in
-            let method = NewsDomain.getTop(page: page ?? 1)
+            let method = NewsDomain.getTop(page: page ?? 1, pageSize: pageSize)
             
             request(method, with: promise)
         }

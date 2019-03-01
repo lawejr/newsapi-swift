@@ -26,6 +26,18 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        newsTableView.register(UINib(resource: R.nib.newsCell), forCellReuseIdentifier: R.reuseIdentifier.newsCell.identifier)
+        
+        searchController = UISearchController(searchResultsController: resultsController)
+        searchController?.searchResultsUpdater = resultsController
+        
+        if let searchBar = searchController?.searchBar {
+            searchBar.placeholder = "Поиск"
+            searchBar.sizeToFit()
+            
+            newsTableView.tableHeaderView = searchBar
+        }
+        
         let objects = CoreDataHelper.shared.fetchRecordsFor(entity: NewsEntity.entityName)
         
         if let objects = objects as? [NewsEntity], news.count == 0 {
@@ -38,18 +50,6 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         
         fetchTimer?.invalidate()
         fetchTimer = Timer.scheduledTimer(timeInterval: 60, target: self, selector: #selector(fetchNews), userInfo: nil, repeats: true)
-        
-        newsTableView.register(UINib(resource: R.nib.newsCell), forCellReuseIdentifier: R.reuseIdentifier.newsCell.identifier)
-        
-        searchController = UISearchController(searchResultsController: resultsController)
-        searchController?.searchResultsUpdater = resultsController
-        
-        if let searchBar = searchController?.searchBar {
-            searchBar.placeholder = "Поиск"
-            searchBar.sizeToFit()
-            
-            newsTableView.tableHeaderView = searchBar
-        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -67,6 +67,13 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     private func updateUI() {
         resultsController.news = news
         newsTableView.reloadData()
+    }
+    
+    private func calculateRequestPageSize() -> Int {
+        let cellHeight = newsTableView.visibleCells.first?.frame.height ?? 320
+        let viewHeight = newsTableView.bounds.height
+        
+        return Int(viewHeight / cellHeight * 3)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -102,7 +109,8 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     func save(news: [News]) {
-        let savedNewsCount = news.count <= NewsTransport.pageSize ? news.count : NewsTransport.pageSize
+        let pageSize = calculateRequestPageSize()
+        let savedNewsCount = news.count <= pageSize ? news.count : pageSize
         
         CoreDataHelper.shared.removeRecordsFor(entity: NewsEntity.entityName)
         
@@ -121,7 +129,8 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         guard let page = nextRequestPage else { return }
         
         hasActiveRequest = true
-        NewsTransport.getTop(page: page).then { result in
+        
+        NewsTransport.getTop(page: page, pageSize: calculateRequestPageSize()).then { result in
             if self.news.count == 0 {
                 self.news = result.articles
             } else {
@@ -151,7 +160,7 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         
         hasActiveRequest = true
         
-        NewsTransport.getTop(page: 1).then { result in
+        NewsTransport.getTop(page: 1, pageSize: calculateRequestPageSize()).then { result in
             if isFirst {
                 self.news = []
             }
