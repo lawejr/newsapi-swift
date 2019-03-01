@@ -28,6 +28,7 @@
 		E3D47C2B221EB2D200A317E9 /* NewsEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3D47C2A221EB2D200A317E9 /* NewsEntity.swift */; };
 		E3D47C2E221FB13E00A317E9 /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3D47C2D221FB13E00A317E9 /* CoreDataHelper.swift */; };
 		E3D47C3022251F5500A317E9 /* ServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3D47C2F22251F5500A317E9 /* ServerError.swift */; };
+		E3D47C32222917AA00A317E9 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E3D47C31222917AA00A317E9 /* .gitignore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 		E3D47C2A221EB2D200A317E9 /* NewsEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsEntity.swift; sourceTree = "<group>"; };
 		E3D47C2D221FB13E00A317E9 /* CoreDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHelper.swift; sourceTree = "<group>"; };
 		E3D47C2F22251F5500A317E9 /* ServerError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerError.swift; sourceTree = "<group>"; };
+		E3D47C31222917AA00A317E9 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +92,7 @@
 		E32791E521D251DE00F67032 = {
 			isa = PBXGroup;
 			children = (
+				E3D47C31222917AA00A317E9 /* .gitignore */,
 				E304C3B321D79C8E00ED8D0B /* Assets.xcassets */,
 				E32791F021D251DE00F67032 /* NewsList */,
 				E32791EF21D251DE00F67032 /* Products */,
@@ -241,6 +244,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E3D47C32222917AA00A317E9 /* .gitignore in Resources */,
 				E32791FF21D251DF00F67032 /* LaunchScreen.storyboard in Resources */,
 				E327920D21D26B5400F67032 /* NewsCell.xib in Resources */,
 				E304C3B421D79C8E00ED8D0B /* Assets.xcassets in Resources */,
@@ -461,6 +465,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = G2YLZ56RVA;
 				INFOPLIST_FILE = NewsList/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -480,6 +485,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = G2YLZ56RVA;
 				INFOPLIST_FILE = NewsList/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
