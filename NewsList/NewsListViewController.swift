@@ -100,10 +100,12 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         }
     }
     
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let lastRow = indexPath.row
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard let windowHeight = newsTableView.window?.frame.height else { return }
         
-        if lastRow == news.count - 1 {
+        let remainsScroll = newsTableView.contentSize.height - newsTableView.contentOffset.y
+        
+        if remainsScroll <= windowHeight {
             handleScrollNews()
         }
     }
@@ -150,7 +152,7 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
             self.updateUI()
             self.hasActiveRequest = false
         }.catch { error in
-            print(error)
+            print(error.localizedDescription)
         }
     }
     
@@ -180,7 +182,7 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
             
             self.save(news: self.news)
         }.catch { error in
-            print(error)
+            print(error.localizedDescription)
         }
     }
     
