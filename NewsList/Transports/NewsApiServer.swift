@@ -46,25 +46,15 @@ extension BaseTransport {
             switch response {
                 
                 case .success(let response):
-//                    if let json = try? response.mapJSON() {
-//                        if let data = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
-//                            if let string = NSString(data: data, encoding: String.Encoding.utf8.rawValue) {
-//                                print(string)
-//                            }
-//                        }
-//                    } else {
-//                        print(response.description)
-//
-//                        if let string = try? response.mapString() {
-//                            print(string)
-//                        }
-//                    }
-                
                     if response.statusCode >= 200 && response.statusCode < 300 {
                         if let object = try? Instances.jsonDecoder.decode(T.self, from: response.data) {
                             promise.then(object)
-                        } else if let error = response as? Error {
-                            promise.catch(error)
+                        } else {
+                            print(response.description)
+                            
+                            if let string = try? response.mapString() {
+                                print(string)
+                            }
                         }
                     } else {
                         let error = ServerError()
