@@ -13,14 +13,13 @@ import CoreData
 
 class NewsListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    @IBOutlet var newsTableView: UITableView!
+    @IBOutlet private var newsTableView: UITableView!
     
-    var nextRequestPage: Int? = 1
-    var hasActiveRequest = false
-    var resultsController = SearchResultsController()
-    var searchController: UISearchController?
-    var fetchTimer: Timer?
-    
+    private var nextRequestPage: Int? = 1
+    private var hasActiveRequest = false
+    private var resultsController = SearchResultsController()
+    private var searchController: UISearchController?
+    private var fetchTimer: Timer?
     private var news: [News] = []
     
     override func viewDidLoad() {
@@ -34,14 +33,12 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         if let searchBar = searchController?.searchBar {
             searchBar.placeholder = "Поиск"
             searchBar.sizeToFit()
-            
-            newsTableView.tableHeaderView = searchBar
         }
         
         let objects = CoreDataHelper.shared.fetchRecordsFor(entity: NewsEntity.entityName)
         
-        if let objects = objects as? [NewsEntity], news.count == 0 {
-            news = objects.map { News.fromCoreData(data: $0)}
+        if let objects = objects as? [NewsEntity], news.isEmpty {
+            news = objects.map { News.fromCoreData(data: $0) }
             
             updateUI()
         }
@@ -98,6 +95,18 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         
             present(safariViewController, animated: true, completion: nil)
         }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return searchController?.searchBar.bounds.height ?? 0
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        if section == 0 {
+            return searchController?.searchBar
+        }
+        
+        return nil
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

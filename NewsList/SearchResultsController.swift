@@ -8,7 +8,8 @@
 
 import UIKit
 
-class SearchResultsController: UITableViewController, UISearchResultsUpdating {
+class SearchResultsController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating {
+    var tableView = UITableView()
     var news: [News] = []
     var filteredNews: [News] = []
     
@@ -26,17 +27,35 @@ class SearchResultsController: UITableViewController, UISearchResultsUpdating {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+        
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(tableView)
+        
+        let leadingConstraint = tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+        let trailingConstraint = tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        let topConstraint = tableView.topAnchor.constraint(equalTo: view.topAnchor)
+        let bottomConstraint = tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        
+        NSLayoutConstraint.activate([
+            leadingConstraint,
+            trailingConstraint,
+            topConstraint,
+            bottomConstraint
+        ])
+        
         tableView.register(UINib(resource: R.nib.newsCell), forCellReuseIdentifier: R.reuseIdentifier.newsCell.identifier)
     }
 
     // MARK: - Table view data source
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return filteredNews.count
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: R.reuseIdentifier.newsCell.identifier) as? NewsCell {
             let newsItem = filteredNews[indexPath.row]
             
