@@ -27,6 +27,7 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         super.viewDidLoad()
         
         newsTableView.register(UINib(resource: R.nib.newsCell), forCellReuseIdentifier: R.reuseIdentifier.newsCell.identifier)
+        newsTableView.register(UINib(resource: R.nib.loadingCell), forCellReuseIdentifier: R.reuseIdentifier.loadingCell.identifier)
         
         searchController = UISearchController(searchResultsController: resultsController)
         searchController?.searchResultsUpdater = resultsController
@@ -81,17 +82,31 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         return Int(viewHeight / cellHeight * 3)
     }
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return news.count
+        if section == 0 {
+            return news.count
+        } else if section == 1 && hasActiveRequest {
+            return 1
+        }
+        
+        return 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let cell = newsTableView.dequeueReusableCell(withIdentifier: R.reuseIdentifier.newsCell.identifier) as? NewsCell {
+        if let cell = newsTableView.dequeueReusableCell(withIdentifier: R.reuseIdentifier.newsCell.identifier) as? NewsCell, indexPath.section == 0 {
             let newsItem = news[indexPath.row]
             
             cell.configure(from: newsItem)
             
             return cell
+        } else if let loadingCell = newsTableView.dequeueReusableCell(withIdentifier: R.reuseIdentifier.loadingCell.identifier) as? LoadingCell, indexPath.section == 1 {
+            loadingCell.spiner.startAnimating()
+            
+            return loadingCell
         }
         
         return UITableViewCell()
@@ -106,20 +121,20 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return searchController?.searchBar.bounds.height ?? 0
+        return 0
+//        return searchController?.searchBar.bounds.height ?? 0
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if section == 0 {
-            return searchController?.searchBar
-        }
+//        if section == 0 {
+//            return searchController?.searchBar
+//        }
         
         return nil
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard let windowHeight = newsTableView.window?.frame.height else { return }
-        
+        let windowHeight = scrollView.frame.height
         let remainsScroll = newsTableView.contentSize.height - newsTableView.contentOffset.y
         
         if remainsScroll <= windowHeight {
@@ -148,6 +163,7 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         guard let page = nextRequestPage else { return }
         
         hasActiveRequest = true
+        newsTableView.reloadSections(IndexSet(integer: 1), with: .none)
         
         NewsTransport.getTop(page: page, pageSize: calculateRequestPageSize()).then { result in
             if self.news.count == 0 {
@@ -168,8 +184,13 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
             
             self.updateUI()
             self.hasActiveRequest = false
+            
+            self.newsTableView.reloadSections(IndexSet(integer: 1), with: .none)
         }.catch { error in
             print(error.localizedDescription)
+            self.hasActiveRequest = false
+            
+            self.newsTableView.reloadSections(IndexSet(integer: 1), with: .none)
         }
     }
     
@@ -209,6 +230,7 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
             }
         }.catch { error in
             print(error.localizedDescription)
+            self.hasActiveRequest = false
             
             if withRefreshControll {
                 self.refreshControl.endRefreshing()
