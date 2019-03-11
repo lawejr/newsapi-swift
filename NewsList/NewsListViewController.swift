@@ -19,6 +19,7 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     private var hasActiveRequest = false
     private var resultsController = SearchResultsController()
     private var searchController: UISearchController?
+    private var refreshControl = UIRefreshControl()
     private var fetchTimer: Timer?
     private var news: [News] = []
     
@@ -37,6 +38,10 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
             resultsController.automaticallyAdjustsScrollViewInsets = false
             resultsController.tableView.contentInset = UIEdgeInsets(top: searchBar.bounds.height, left: 0, bottom: 0, right: 0)
         }
+        
+        refreshControl.attributedTitle = NSAttributedString(string: "Идет обновление...")
+        refreshControl.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
+        newsTableView.addSubview(refreshControl)
         
         let objects = CoreDataHelper.shared.fetchRecordsFor(entity: NewsEntity.entityName)
         
@@ -169,7 +174,12 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     @objc
-    func fetchNews(isFirst: Bool = false) {
+    func refresh(sender: AnyObject) {
+        self.fetchNews(isFirst: false, withRefreshControll: true)
+    }
+    
+    @objc
+    func fetchNews(isFirst: Bool = false, withRefreshControll: Bool = false) {
         guard !hasActiveRequest else { return }
         
         hasActiveRequest = true
@@ -193,8 +203,16 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
             self.hasActiveRequest = false
             
             self.save(news: self.news)
+            
+            if withRefreshControll {
+                self.refreshControl.endRefreshing()
+            }
         }.catch { error in
             print(error.localizedDescription)
+            
+            if withRefreshControll {
+                self.refreshControl.endRefreshing()
+            }
         }
     }
     
