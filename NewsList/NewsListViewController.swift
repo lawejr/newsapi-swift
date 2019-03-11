@@ -33,6 +33,9 @@ class NewsListViewController: UIViewController, UITableViewDataSource, UITableVi
         if let searchBar = searchController?.searchBar {
             searchBar.placeholder = "Поиск"
             searchBar.sizeToFit()
+            
+            resultsController.automaticallyAdjustsScrollViewInsets = false
+            resultsController.tableView.contentInset = UIEdgeInsets(top: searchBar.bounds.height, left: 0, bottom: 0, right: 0)
         }
         
         let objects = CoreDataHelper.shared.fetchRecordsFor(entity: NewsEntity.entityName)
